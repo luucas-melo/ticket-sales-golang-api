@@ -11,6 +11,9 @@ var (
 	ErrSpotNameTwoChacracters = errors.New(("spot already reserved"))
 	ErrSpotStartWithLetter    = errors.New("spot name must start with a letter")
 	ErrSpotEndWithNumber      = errors.New("spot name must end with a number")
+	ErrInvalidSpotNumber      = errors.New("invalid spot number")
+	ErrSpotNotFound           = errors.New("spot not found")
+	ErrSpotAlreadyReserved    = errors.New("spot already reserved")
 )
 
 type SpotStatus string
@@ -58,6 +61,16 @@ func (s *Spot) Validate() error {
 	if s.Name[1] < '0' || s.Name[1] > '9' {
 		return ErrSpotEndWithNumber
 	}
+
+	return nil
+}
+
+func (s *Spot) Reserve(ticketID string) error {
+	if s.Status == SpotStatusSold {
+		return ErrSpotAlreadyReserved
+	}
+	s.Status = SpotStatusSold
+	s.TicketID = ticketID
 
 	return nil
 }
